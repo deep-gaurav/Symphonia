@@ -277,9 +277,21 @@ impl IsoMp4Reader {
         let mut seek_loc = None;
         let mut seg_skip = 0;
 
+        let first_seg = self.segs.iter().nth(0);
+        if let Some(first_seg) = first_seg {
+            let size = first_seg.track_ts_range(track_num);
+            let width = size.1-size.0;
+            let segment_index = ts/width;
+            log::info!("Seek to segment {}",segment_index);
+            seg_skip = (segment_index as usize)-1;
+        }
+
         loop {
             // Iterate over all segments and attempt to find the segment and sample number that
             // contains the desired timestamp. Skip segments already examined.
+
+
+
             for (seg_idx, seg) in self.segs.iter().enumerate().skip(seg_skip) {
                 if let Some(sample_num) = seg.ts_sample(track_num, ts)? {
                     seek_loc = Some(SeekLocation {
