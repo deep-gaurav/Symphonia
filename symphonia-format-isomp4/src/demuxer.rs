@@ -277,13 +277,23 @@ impl IsoMp4Reader {
         let mut seek_loc = None;
         let mut seg_skip = 0;
 
-        let first_seg = self.segs.iter().find(|seg|(seg.track_ts_range(track_num).1-seg.track_ts_range(track_num).0)>0);
+        let first_seg = self.segs.iter().find(|seg|{
+            let segr = seg.track_ts_range(track_num);
+            if (segr.1-segr.0)>0{
+                true
+            }else{
+                log::info!("Segment start at {} - {}",segr.0,segr.1);
+                false
+            }
+        });
         if let Some(first_seg) = first_seg {
             let size = first_seg.track_ts_range(track_num);
             let width = size.1-size.0;
             let segment_index = ts/width;
             log::info!("Seek to segment {}",segment_index);
             seg_skip = (segment_index as usize)-1;
+        }else{
+            
         }
 
         loop {
