@@ -277,7 +277,7 @@ impl IsoMp4Reader {
         let mut seek_loc = None;
         let mut seg_skip = 0;
 
-        let first_seg = self.segs.iter().nth(0);
+        let first_seg = self.segs.iter().find(|seg|(seg.track_ts_range(track_num).1-seg.track_ts_range(track_num).0)>0);
         if let Some(first_seg) = first_seg {
             let size = first_seg.track_ts_range(track_num);
             let width = size.1-size.0;
