@@ -291,6 +291,8 @@ impl IsoMp4Reader {
             let width = size.1-size.0;
             let segment_index = ts/width;
             log::info!("Seek to segment {}",segment_index);
+            log::info!("Segment width {}",width);
+            log::info!("available segments {}",self.segs.len());
             seg_skip = (segment_index as usize)-1;
         }else{
             
